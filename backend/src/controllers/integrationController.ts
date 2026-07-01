@@ -1,0 +1,70 @@
+import { Request, Response } from 'express';
+import Persona from '../models/Persona';
+import axios from 'axios';
+
+const VAPI_API_KEY = process.env.VAPI_API_KEY || 'your_vapi_key';
+
+export const createVapiAssistant = async (req: Request, res: Response) => {
+  const { personaId } = req.params;
+  try {
+    const persona = await Persona.findByPk(personaId as any);
+    if (!persona) {
+      return res.status(404).json({ message: 'Persona not found' });
+    }
+
+    const response = await axios.post('https://api.vapi.ai/assistant', {
+      name: persona.name,
+      firstMessage: `Hello, I am ${persona.name}, your ${persona.role}. How can I help you today?`,
+      model: {
+        provider: 'openai',
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: `You are ${persona.name}, a ${persona.role}. Your tone is ${persona.tone}. Knowledge: ${JSON.stringify(persona.knowledge_base)}`,
+          },
+        ],
+      },
+      voice: {
+        provider: 'playht',
+        voiceId: 'jennifer',
+      },
+    }, {
+      headers: { Authorization: `Bearer ${VAPI_API_KEY}` },
+    });
+
+    const assistantId = response.data.id;
+    await persona.update({ vapi_assistant_id: assistantId });
+
+    res.status(201).json({
+      message: 'Vapi Assistant created and linked',
+      assistantId,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Error creating Vapi Assistant',
+      error: error.response?.data || error.message,
+    });
+  }
+};
+
+export const updateCalendarConfig = async (req: Request, res: Response) => {
+  const { personaId } = req.params;
+  try {
+    const persona = await Persona.findByPk(personaId as any);
+    if (!persona) {
+      return res.status(404).json({ message: 'Persona not found' });
+    }
+
+    await persona.update({ calendar_config: req.body });
+    res.status(200).json({
+      message: 'Calendar configuration updated',
+      calendar_config: persona.calendar_config,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Error updating calendar config',
+      error: error.message,
+    });
+  }
+};

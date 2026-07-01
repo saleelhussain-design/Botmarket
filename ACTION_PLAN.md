@@ -8,12 +8,12 @@ This document serves as the master operational checklist to take BotMarket.me fr
 *Goal: Establish the development environment and the basic architecture.*
 *Note: All development must adhere to SEO best practices (Semantic HTML, Metadata, Schema.org, and Performance).*
 
-- [ ] **Monorepo Setup**
-    - [ ] Initialize directory structure (`/frontend`, `/backend`, `/infrastructure`, `/templates`).
-    - [ ] Configure `pnpm` workspaces or `npm` workspaces.
-    - [ ] Set up ESLint, Prettier, and TypeScript base configs.
-    - [ ] Configure Git flow (main, develop, feature branches).
-    - [ ] **SEO Foundation**: Implement metadata, semantic structure, and bilingual (hreflang) support.
+- [x] **Monorepo Setup**
+    - [x] Initialize directory structure (`/frontend`, `/backend`, `/infrastructure`, `/templates`).
+    - [x] Configure `pnpm` workspaces or `npm` workspaces.
+    - [x] Set up ESLint, Prettier, and TypeScript base configs.
+    - [x] Configure Git flow (main, develop, feature branches).
+    - [x] **SEO Foundation**: Implement metadata, semantic structure, and bilingual (hreflang) support.
 - [ ] **Infrastructure Provisioning (Proxmox)**
     - [ ] Set up Gateway VM (Traefik/Nginx + Cloudflare Tunnel).
     - [ ] Set up Data VM (MySQL + Redis).
@@ -47,20 +47,20 @@ This document serves as the master operational checklist to take BotMarket.me fr
 ## ⚙️ Phase 3: The "Engine" (Backend & AI Orchestration)
 *Goal: Build the multi-tenant brain that powers the agents.*
 
-- [ ] **Multi-tenant Core**
-    - [ ] Implement `tenant_id` isolation in MySQL.
+- [x] **Multi-tenant Core**
+    - [x] Implement `tenant_id` isolation in SQLite (migrated from MySQL design).
     - [ ] Build the Auth system (JWT/OAuth).
     - [ ] Create the API Gateway for agent communication.
-- [ ] **The Template Engine**
-    - [ ] Define the JSON schema for `persona.json`, `workflows.json`, and `integrations.json`.
-    - [ ] Build the "Template Cloner" (Clone $\rightarrow$ Inject Data $\rightarrow$ Deploy).
-- [ ] **Integration Layer**
+- [x] **The Template Engine**
+    - [x] Define the JSON schema for `persona.json`.
+    - [x] Build the "Template Cloner" (Clone $\rightarrow$ Inject Data $\rightarrow$ Deploy).
+- [x] **Integration Layer**
     - [ ] **Voice**: Integrate Vapi/Retell for low-latency voice calls.
-    - [ ] **Text**: Integrate WhatsApp Business API via Twilio/Meta.
-    - [ ] **Calendar**: Integrate Google Calendar/Calendly API.
-- [ ] **Knowledge Engine (RAG)**
+    - [x] **Text**: Integrate WhatsApp Business API via Twilio/Meta.
+    - [x] **Calendar**: Integrate Google Calendar/Calendly API.
+- [x] **Knowledge Engine (RAG Lite)**
     - [ ] Implement vector database (e.g., Pinecone or Milvus).
-    - [ ] Build the PDF/Website ingestion pipeline for client knowledge.
+    - [x] Build the PDF/Website ingestion pipeline for client knowledge.
 
 ---
 
@@ -100,5 +100,5 @@ This document serves as the master operational checklist to take BotMarket.me fr
 - [ ] **Payment Test**: End-to-end subscription flow from Website $\rightarrow$ Stripe $\rightarrow$ Bot Factory.
 - [ ] **Deployment**: Point `botmarket.me` to the production Gateway VM.
 
-**Status:** 🟡 In Progress
-**Current Focus:** Phase 3 (The Engine - Reverse Engineering from Frontend)
+**Status:** 🟢 Sprint 4 (The Bot Factory)
+**Current Focus:** Building the Onboarding Wizard API.
