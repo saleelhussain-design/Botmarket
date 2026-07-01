@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.step3Integrations = exports.step2KnowledgeUpload = exports.step1BasicInfo = void 0;
 const Persona_1 = __importDefault(require("../models/Persona"));
 const fileParser_1 = require("../utils/fileParser");
+const child_process_1 = require("child_process");
+const fs_1 = __importDefault(require("fs"));
 const step1BasicInfo = async (req, res) => {
     try {
         const { name, role, tone, tenant_id } = req.body;
@@ -63,8 +65,19 @@ const step3Integrations = async (req, res) => {
         if (vapi) {
             console.log(`Triggering Vapi provisioning for persona ${personaId}`);
         }
+        // --- DEPLOYMENT LOGIC ---
+        // Spawn an isolated worker process for this agent
+        const workerDir = '/home/saleel/botmarket/backend/workers';
+        if (!fs_1.default.existsSync(workerDir)) {
+            fs_1.default.mkdirSync(workerDir, { recursive: true });
+        }
+        const workerCmd = `node /home/saleel/botmarket/backend/dist/worker/agentWorker.js ${personaId} > ${workerDir}/agent_${personaId}.log 2>&1 &`;
+        (0, child_process_1.exec)(workerCmd, (error) => {
+            if (error)
+                console.error(`Deployment failed for ${personaId}:`, error);
+        });
         res.status(200).json({
-            message: 'Step 3 complete: Integrations configured',
+            message: 'Step 3 complete: Agent Deployed!',
             persona: persona,
         });
     }

@@ -6,13 +6,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseFile = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
-const pdf = require('pdf-parse');
+const pdf2json = require('pdf2json');
 const parseFile = async (filePath) => {
     const ext = path_1.default.extname(filePath).toLowerCase();
     if (ext === '.pdf') {
-        const data = await fs_1.default.promises.readFile(filePath);
-        const parsed = await pdf(data);
-        return parsed.text;
+        return new Promise((resolve, reject) => {
+            const pdfParser = new pdf2json();
+            pdfParser.on("event", (errDesc, textParsed) => {
+                if (errDesc) {
+                    reject(new Error(errDesc));
+                }
+                else if (textParsed) {
+                    // pdf2json returns a complex object, we just want the text
+                    // This is a simplification for the demo
+                    resolve(textParsed.Pages[0].Texts.map((t) => t.Text).join(" "));
+                }
+            });
+            pdfParser.parseFile(filePath);
+        });
     }
     // default to plain text
     return await fs_1.default.promises.readFile(filePath, 'utf-8');

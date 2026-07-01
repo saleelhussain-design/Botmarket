@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import Persona from '../models/Persona';
 import { parseFile } from '../utils/fileParser';
+import { exec } from 'child_process';
+import fs from 'fs';
 
 export const step1BasicInfo = async (req: Request, res: Response) => {
   try {
@@ -60,8 +62,21 @@ export const step3Integrations = async (req: Request, res: Response) => {
       console.log(`Triggering Vapi provisioning for persona ${personaId}`);
     }
 
+    // --- DEPLOYMENT LOGIC ---
+    // Spawn an isolated worker process for this agent
+    const workerDir = '/home/saleel/botmarket/backend/workers';
+    if (!fs.existsSync(workerDir)) {
+      fs.mkdirSync(workerDir, { recursive: true });
+    }
+
+    const workerCmd = `node /home/saleel/botmarket/backend/dist/worker/agentWorker.js ${personaId} > ${workerDir}/agent_${personaId}.log 2>&1 &`;
+    
+    exec(workerCmd, (error) => {
+      if (error) console.error(`Deployment failed for ${personaId}:`, error);
+    });
+
     res.status(200).json({
-      message: 'Step 3 complete: Integrations configured',
+      message: 'Step 3 complete: Agent Deployed!',
       persona: persona,
     });
   } catch (error: any) {
