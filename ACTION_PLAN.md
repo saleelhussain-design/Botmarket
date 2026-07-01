@@ -6,12 +6,14 @@ This document serves as the master operational checklist to take BotMarket.me fr
 
 ## 🏁 Phase 1: Infrastructure & Project Foundation
 *Goal: Establish the development environment and the basic architecture.*
+*Note: All development must adhere to SEO best practices (Semantic HTML, Metadata, Schema.org, and Performance).*
 
 - [ ] **Monorepo Setup**
     - [ ] Initialize directory structure (`/frontend`, `/backend`, `/infrastructure`, `/templates`).
     - [ ] Configure `pnpm` workspaces or `npm` workspaces.
     - [ ] Set up ESLint, Prettier, and TypeScript base configs.
     - [ ] Configure Git flow (main, develop, feature branches).
+    - [ ] **SEO Foundation**: Implement metadata, semantic structure, and bilingual (hreflang) support.
 - [ ] **Infrastructure Provisioning (Proxmox)**
     - [ ] Set up Gateway VM (Traefik/Nginx + Cloudflare Tunnel).
     - [ ] Set up Data VM (MySQL + Redis).
