@@ -2,6 +2,7 @@ import express from 'express';
 import personaRoutes from './routes/personaRoutes';
 import integrationRoutes from './routes/integrationRoutes';
 import whatsappRoutes from './routes/whatsappRoutes';
+import wizardRoutes from './routes/wizardRoutes';
 import sequelize from './config/database';
 import Persona from './models/Persona';
 import Tenant from './models/Tenant';
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/api', personaRoutes);
 app.use('/api/integrations', integrationRoutes);
 app.use('/api/whatsapp', whatsappRoutes);
+app.use('/api/wizard', wizardRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {
@@ -23,7 +25,7 @@ app.get('/health', (req, res) => {
 
 const startServer = async () => {
   try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     console.log('Database synced successfully.');
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Backend server running at http://0.0.0.0:${PORT}`);
