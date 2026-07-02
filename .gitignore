@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+**/dist/
+
+# Logs
+*.log
+**/*.log
+
+# Database
+*.sqlite
+**/*.sqlite
+**/*.sqlite-journal
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Env and secrets
+.env
+*.env
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test files
+test_*.txt

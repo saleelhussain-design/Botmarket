@@ -1,0 +1,42 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "AI Persona Schema",
+    "description": "Defines the personality, behavior, and knowledge of a digital employee.",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The name of the AI persona."
+        },
+        "role": {
+            "type": "string",
+            "description": "The professional role (e.g., Sales Assistant, Medical Concierge)."
+        },
+        "tone": {
+            "type": "string",
+            "enum": ["professional", "friendly", "formal", "casual", "empathetic"],
+            "description": "The communication style of the agent."
+        },
+        "language": {
+            "type": "string",
+            "default": "en",
+            "description": "Primary language (ISO 639-1 code)."
+        },
+        "knowledge_base": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "URLs or identifiers for knowledge sources."
+        },
+        "tools": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": ["calendar", "whatsapp", "email", "web_search"]
+            },
+            "description": "Capabilities enabled for this persona."
+        }
+    },
+    "required": ["name", "role", "tone"]
+}
