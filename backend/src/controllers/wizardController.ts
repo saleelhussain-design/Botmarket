@@ -3,6 +3,7 @@ import Persona from '../models/Persona';
 import { parseFile } from '../utils/fileParser';
 import { exec } from 'child_process';
 import fs from 'fs';
+import path from 'path';
 
 export const step1BasicInfo = async (req: Request, res: Response) => {
   try {
@@ -28,10 +29,20 @@ export const step2KnowledgeUpload = async (req: Request, res: Response) => {
     const persona = await Persona.findByPk(personaId as any);
     if (!persona) return res.status(404).json({ message: 'Persona not found' });
 
-    // Assuming req.body.filePath is passed for simplicity in this demo
-    // In production, we'd use multer for file uploads
     const { filePath } = req.body;
-    const text = await parseFile(filePath);
+    
+    // Resolve absolute path if a relative one is provided
+    const absolutePath = path.isAbsolute(filePath) 
+      ? filePath 
+      : path.join(process.cwd(), filePath);
+
+    console.log(`Attempting to parse file at: ${absolutePath}`);
+
+    if (!fs.existsSync(absolutePath)) {
+      throw new Error(`File not found at ${absolutePath}`);
+    }
+
+    const text = await parseFile(absolutePath);
     
     const updatedKnowledge = [...(persona.knowledge_base || []), text];
     await persona.update({ knowledge_base: updatedKnowledge });
@@ -41,6 +52,7 @@ export const step2KnowledgeUpload = async (req: Request, res: Response) => {
       knowledgeCount: updatedKnowledge.length,
     });
   } catch (error: any) {
+    console.error(`Step 2 Error: ${error.message}`);
     res.status(500).json({ message: 'Step 2 failed', error: error.message });
   }
 };
@@ -63,7 +75,6 @@ export const step3Integrations = async (req: Request, res: Response) => {
     }
 
     // --- DEPLOYMENT LOGIC ---
-    // Spawn an isolated worker process for this agent
     const workerDir = '/home/saleel/botmarket/backend/workers';
     if (!fs.existsSync(workerDir)) {
       fs.mkdirSync(workerDir, { recursive: true });

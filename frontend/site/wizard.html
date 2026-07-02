@@ -6,6 +6,8 @@
     <title>BotMarket | AI Workforce Wizard</title>
     <link rel="stylesheet" href="assets/index-nYuAEd3z.css">
     <style>
+        body { color: #000; }
+
         .wizard-container { max-width: 600px; margin: 100px auto; padding: 2rem; font-family: sans-serif; border: 1px solid #ddd; border-radius: 12px; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .step { display: none; }
         .step.active { display: block; }
@@ -51,7 +53,7 @@
                 </div>
                 <button type="button" class="btn" onclick="nextStep(2)">Next</button>
             </div>
-
+        
             <!-- Step 2: Knowledge -->
             <div class="step" id="step2">
                 <h2>Step 2: Knowledge Base</h2>
@@ -62,7 +64,7 @@
                 <button type="button" class="btn" onclick="nextStep(1)">Back</button>
                 <button type="button" class="btn" onclick="nextStep(3)">Next</button>
             </div>
-
+        
             <!-- Step 3: Integrations -->
             <div class="step" id="step3">
                 <h2>Step 3: Connect Tools</h2>
@@ -80,13 +82,14 @@
             </div>
         </form>
     </div>
-
+    
     <script>
+        const API_BASE_URL = 'http://192.168.1.222:3001/api';
         let currentPersonaId = null;
-
+    
         async function nextStep(step) {
             if (step === 2) {
-                const res = await fetch('/api/wizard/start', {
+                const res = await fetch(`${API_BASE_URL}/wizard/start`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -100,16 +103,14 @@
                     currentPersonaId = data.personaId;
                     showStep(2);
                 } else {
-                    alert('Error creating persona');
+                    alert('Error creating persona: ' + (data.message || 'Unknown error'));
                 }
             } else if (step === 3) {
                 // Knowledge upload simulation
                 const fileInput = document.getElementById('knowledgeFile');
                 if (fileInput.files.length > 0) {
-                    const formData = new FormData();
-                    formData.append('file', fileInput.files[0]);
                     // For this demo, we send the filename as path since backend is mock
-                    await fetch(`/api/wizard/${currentPersonaId}/knowledge`, {
+                    await fetch(`${API_BASE_URL}/wizard/${currentPersonaId}/knowledge`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ filePath: fileInput.files[0].name })
@@ -120,7 +121,7 @@
                 showStep(step);
             }
         }
-
+    
         function showStep(step) {
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
             document.getElementById('step' + step).classList.add('active');
@@ -128,9 +129,9 @@
                 s.classList.toggle('active', i < step);
             });
         }
-
+    
         async function finishWizard() {
-            const res = await fetch(`/api/wizard/${currentPersonaId}/integrations`, {
+            const res = await fetch(`${API_BASE_URL}/wizard/${currentPersonaId}/integrations`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -149,3 +150,4 @@
     </script>
 </body>
 </html>
+

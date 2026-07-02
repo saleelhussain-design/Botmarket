@@ -17,6 +17,7 @@
     "@types/node": "^26.1.0",
     "ajv": "^8.20.0",
     "axios": "^1.18.1",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "pdf2json": "^4.0.3",
     "sequelize": "^6.37.8",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.4",
+    "@types/cors": "^2.8.19",
     "@types/pdf-parse": "^1.1.5",
     "@types/sequelize": "^6.12.0"
   }
