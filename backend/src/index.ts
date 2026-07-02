@@ -5,6 +5,8 @@ import integrationRoutes from './routes/integrationRoutes';
 import whatsappRoutes from './routes/whatsappRoutes';
 import wizardRoutes from './routes/wizardRoutes';
 import marketingRoutes from './routes/marketingRoutes';
+import salesRoutes from './routes/salesRoutes';
+import dashboardRoutes from './routes/dashboardRoutes';
 import sequelize from './config/database';
 import Persona from './models/Persona';
 import Tenant from './models/Tenant';
@@ -12,7 +14,11 @@ import Tenant from './models/Tenant';
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // Routes
@@ -21,6 +27,8 @@ app.use('/api/integrations', integrationRoutes);
 app.use('/api/whatsapp', whatsappRoutes);
 app.use('/api/wizard', wizardRoutes);
 app.use('/api/marketing', marketingRoutes);
+app.use('/api/sales', salesRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

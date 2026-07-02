@@ -3,13 +3,19 @@ import { marketingService } from '../services/marketingService';
 
 export const generateContent = async (req: Request, res: Response) => {
   try {
-    const { personaId, productName, targetAudience } = req.body;
+    const { personaId, productName, targetAudience, platform } = req.body;
     
-    if (!personaId || !productName || !targetAudience) {
-      return res.status(400).json({ message: 'Missing required parameters: personaId, productName, and targetAudience are required.' });
+    if (!personaId || !productName || !targetAudience || !platform) {
+      return res.status(400).json({ message: 'Missing required parameters: personaId, productName, targetAudience, and platform are required.' });
     }
 
-    const copy = await marketingService.generateMarketingCopy({ personaId, productName, targetAudience });
+    const copy = await marketingService.generateMarketingCopy({ 
+      personaId: Number(personaId), 
+      productName, 
+      targetAudience, 
+      platform 
+    });
+    
     res.status(200).json({ 
       message: 'Content generated successfully', 
       copy 
